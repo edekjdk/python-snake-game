@@ -68,7 +68,7 @@ class Snake:
         if self.direction == "down":
             self.y += 10
         self.draw()
-
+www
 
 if __name__ == "__main__":
     game = Game()
