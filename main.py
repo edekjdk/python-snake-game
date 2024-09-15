@@ -8,15 +8,24 @@ class Game:
     def __init__(self):
         pygame.init()
         self.surface = pygame.display.set_mode((1000, 500))
-        self.snake = Snake(self.surface, 10)
+        self.snakeLength = 3
+        self.snake = Snake(self.surface, self.snakeLength)
         self.snake.draw()
         self.apple = Apple(self.surface)
         self.apple.draw()
 
+
+    
+
+    def collisionWithApple(self):
+        if self.snake.x[0] == self.apple.x and self.snake.y[0] == self.apple.y:
+            self.apple = Apple(self.surface)
+            self.snake.increaseLenght()
+
     def play(self):
         self.snake.walk()
         self.apple.draw()
-
+        self.collisionWithApple()
     def run(self):
         running = True
 
@@ -56,6 +65,11 @@ class Snake:
             self.surface.blit(self.block, (self.x[i], self.y[i]))
             pygame.display.flip()
 
+    def increaseLenght(self):
+        self.length += 1
+        self.x.append(-1)
+        self.y.append(-1)
+
     def moveUp(self):
         self.direction = "up"
 
@@ -91,8 +105,8 @@ class Apple:
         self.apple = pygame.Surface((20, 20))
         self.apple.fill((255, 0, 0))
         self.surface = surface
-        self.x = random.randint(1, 999)
-        self.y = random.randint(1, 499)
+        self.x = random.randrange(20, 980, 20)
+        self.y = random.randrange(20, 480, 20)
 
     def draw(self):
         self.surface.blit(self.apple, (self.x, self.y))
