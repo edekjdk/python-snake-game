@@ -8,14 +8,17 @@ class Game:
     def __init__(self):
         pygame.init()
         self.surface = pygame.display.set_mode((1000, 500))
-        self.snakeLength = 3
+        self.snakeLength = 1
         self.snake = Snake(self.surface, self.snakeLength)
         self.snake.draw()
         self.apple = Apple(self.surface)
         self.apple.draw()
 
 
-    
+    def displacyScore(self):
+        font = pygame.font.SysFont('arial', 30)
+        score = font.render("Score {}".format(self.snake.length), True, (255, 255, 255))
+        self.surface.blit(score, (800, 400))
 
     def collisionWithApple(self):
         if self.snake.x[0] == self.apple.x and self.snake.y[0] == self.apple.y:
@@ -26,6 +29,8 @@ class Game:
         self.snake.walk()
         self.apple.draw()
         self.collisionWithApple()
+        self.displacyScore()
+        pygame.display.flip()
     def run(self):
         running = True
 
