@@ -30,10 +30,49 @@ class Game:
             self.apple = Apple(self.surface)
             self.snake.increase_length()
 
+    def collision_with_walls(self):
+        if self.snake.x[0] == boardWidth or self.snake.x[0] == 0 or self.snake.y[0] == boardHeight or self.snake.y[0] == 0:
+            self.game_over()
+
+    def collision_with_body(self):
+        for i in range(1, self.snake.length):
+            if self.snake.x[0] == self.snake.x[i] and self.snake.y[0] == self.snake.y[i]:
+                self.game_over()
+
+    def reset(self):
+        self.snake = Snake(self.surface, snakeStartLength)
+        self.apple = Apple(self.surface)
+        self.snake.x = [100] * snakeStartLength
+        self.snake.y = [100] * snakeStartLength
+
+    def game_over(self):
+        self.surface.fill((0, 0, 0))
+        font = pygame.font.SysFont('arial', 30)
+        game_over_text = font.render(f"Game Over! Score: {self.snake.length - snakeStartLength}", True, (255, 255, 255))
+        restart_text = font.render("Press Enter to Restart", True, (255, 255, 255))
+
+        self.surface.blit(game_over_text, (boardWidth // 4, boardHeight // 3))
+        self.surface.blit(restart_text, (boardWidth // 4, boardHeight // 2))
+        pygame.display.flip()
+
+        pygame.event.clear()
+        game_over = True
+        while game_over:
+            for event in pygame.event.get():
+                if event.type == KEYDOWN:
+                    if event.key == K_RETURN:
+                        self.reset()
+                        game_over = False
+                elif event.type == QUIT:
+                    pygame.quit()
+                    exit()
+
     def play(self):
         self.snake.walk()
         self.apple.draw()
         self.collision_with_apple()
+        self.collision_with_walls()
+        self.collision_with_body()
         self.display_score()
         pygame.display.flip()
 
