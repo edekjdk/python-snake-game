@@ -23,7 +23,7 @@ class Game:
     def display_score(self):
         font = pygame.font.SysFont('arial', 30)
         score = font.render("Score: {}".format(self.snake.length - snakeStartLength), True, (255, 255, 255))
-        self.surface.blit(score, (boardWidth - 120, boardHeight - boardHeight))
+        self.surface.blit(score, (boardWidth - 120, 10))
 
     def collision_with_apple(self):
         if self.snake.x[0] == self.apple.x and self.snake.y[0] == self.apple.y:
@@ -31,13 +31,12 @@ class Game:
             self.snake.increase_length()
 
     def collision_with_walls(self):
-        if self.snake.x[0] == boardWidth or self.snake.x[0] == 0 or self.snake.y[0] == boardHeight or self.snake.y[0] == 0:
+        if self.snake.x[0] == boardWidth or self.snake.x[0] == 0-snakeAndAppleSize or self.snake.y[0] == boardHeight or self.snake.y[0] == 0-snakeAndAppleSize:
             self.game_over()
 
     def collision_with_body(self):
-        for i in range(1, self.snake.length):
-            if self.snake.x[0] == self.snake.x[i] and self.snake.y[0] == self.snake.y[i]:
-                self.game_over()
+        if (self.snake.x[0], self.snake.y[0]) in zip(self.snake.x[1:], self.snake.y[1:]):
+            self.game_over()
 
     def reset(self):
         self.snake = Snake(self.surface, snakeStartLength)
@@ -78,6 +77,7 @@ class Game:
 
     def run(self):
         running = True
+        clock = pygame.time.Clock()
 
         while running:
             for event in pygame.event.get():
@@ -94,7 +94,7 @@ class Game:
                     running = False
 
             self.play()
-            time.sleep(0.2)
+            clock.tick(10)
 
 
 class Snake:
@@ -112,7 +112,6 @@ class Snake:
 
         for i in range(self.length):
             self.surface.blit(self.block, (self.x[i], self.y[i]))
-            pygame.display.flip()
 
     def increase_length(self):
         self.length += 1
@@ -120,16 +119,20 @@ class Snake:
         self.y.append(-1)
 
     def move_up(self):
-        self.direction = "up"
+        if self.direction != "down":
+            self.direction = "up"
 
     def move_down(self):
-        self.direction = "down"
+        if self.direction != "up":
+            self.direction = "down"
 
     def move_left(self):
-        self.direction = "left"
+        if self.direction != "right":
+            self.direction = "left"
 
     def move_right(self):
-        self.direction = "right"
+        if self.direction != "left":
+            self.direction = "right"
 
     def walk(self):
 
@@ -158,7 +161,6 @@ class Apple:
 
     def draw(self):
         self.surface.blit(self.apple, (self.x, self.y))
-        pygame.display.flip()
 
 
 if __name__ == "__main__":
