@@ -10,7 +10,7 @@ snakeStartLength = 3
 snakeColor = (0, 255, 0)
 appleColor = (255, 0, 0)
 
-
+f
 class Game:
     def __init__(self):
         pygame.init()
